@@ -2,16 +2,27 @@ package view;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+
+/**
+ * Klasa tworzaca glowne okno programu
+ * 
+ * @author GrzegorzK
+ *
+ */
 
 public class LottoMainWindow
 {
-
     private JFrame frame;
 
     public LottoMainWindow()
@@ -19,40 +30,73 @@ public class LottoMainWindow
 	initialize();
     }
 
+    /**
+     * inicjalizacja glownego okna programu
+     */
     private void initialize()
     {
 	frame = new JFrame();
 	frame.setBounds(100, 100, 450, 300);
 	frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	frame.getContentPane().setLayout(null);
-	
+	frame.setLayout(null);
+
 	JPanel panel = new JPanel();
 	panel.setBounds(0, 0, 434, 262);
-	frame.getContentPane().add(panel);
+	frame.add(panel);
 	panel.setLayout(null);
-	
+
 	JMenuBar menuBar = new JMenuBar();
 	menuBar.setBounds(0, 0, 434, 21);
 	panel.add(menuBar);
-	
+
 	JMenu menuFile = new JMenu("File");
 	menuBar.add(menuFile);
-	
+
 	JMenuItem menuItemOpenRead = new JMenuItem("Open / Read file");
-	
-	menuItemOpenRead.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-		    System.out.print("Dupa Jasiu");
-		}
-	});
+
 	menuFile.add(menuItemOpenRead);
-	
+
 	JMenu menuOperation = new JMenu("Operation");
 	menuBar.add(menuOperation);
-	
+
 	JMenuItem menuItemOperation1 = new JMenuItem("Operation 1");
 	menuOperation.add(menuItemOperation1);
-	
+
+	menuItemOpenRead.addActionListener(new ActionListener()
+	{
+	    public void actionPerformed(ActionEvent e)
+	    {
+		Object source = e.getSource();
+		if (source == menuItemOpenRead)
+		{
+		    FileInputStream fileInputStream = getFileInputStream();
+		}
+	    }
+	});
+
 	this.frame.setVisible(true);
     }
+
+    private FileInputStream getFileInputStream()
+    {
+	FileInputStream inputStream = null;
+	JFileChooser fileChooser = new JFileChooser();
+	if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION)
+	{
+	    File file = fileChooser.getSelectedFile();
+	    try
+	    {
+		inputStream = new FileInputStream(file);
+	    } catch (FileNotFoundException e1)
+	    {
+		e1.printStackTrace(); // wyświetla przyczyne bledu w
+				      // konsoli
+		JOptionPane.showMessageDialog(null, "Nie można odnaleźć określonego pliku");
+		this.getFileInputStream(); // dzięki THIS odwołujemy się do
+					   // każdego elementów obecnej klasy.
+	    }
+	}
+	return inputStream;
+    }
+
 }
