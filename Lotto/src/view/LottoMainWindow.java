@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -66,10 +67,20 @@ public class LottoMainWindow
 	{
 	    public void actionPerformed(ActionEvent e)
 	    {
+		int i;
 		Object source = e.getSource();
 		if (source == menuItemOpenRead)
 		{
 		    FileInputStream fileInputStream = getFileInputStream();
+		    try {
+			do {
+			    i = fileInputStream.read();
+			    if (i != -1) System.out.print((char)i);
+			} while (i != -1);
+		    }
+		    catch (IOException e1){
+			System.out.print("Blad odczytu pliku");
+		    }
 		}
 	    }
 	});
