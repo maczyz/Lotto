@@ -1,19 +1,12 @@
 package view;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+
+import model.LottoHelper;
 
 /**
  * Klasa tworzaca glowne okno programu
@@ -39,11 +32,11 @@ public class LottoMainWindow
 		frame = new JFrame();
 		frame.setBounds(100, 100, 450, 300);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setLayout(null);
+		frame.getContentPane().setLayout(null);
 
 		JPanel panel = new JPanel();
 		panel.setBounds(0, 0, 434, 262);
-		frame.add(panel);
+		frame.getContentPane().add(panel);
 		panel.setLayout(null);
 
 		JMenuBar menuBar = new JMenuBar();
@@ -60,58 +53,22 @@ public class LottoMainWindow
 		JMenu menuOperation = new JMenu("Operation");
 		menuBar.add(menuOperation);
 
-		JMenuItem menuItemOperation1 = new JMenuItem("Operation 1");
-		menuOperation.add(menuItemOperation1);
+		JMenuItem menuItemOperationCzyTrafiles = new JMenuItem("Sprawdz czy trafiles");
+		menuOperation.add(menuItemOperationCzyTrafiles);
 
-		menuItemOpenRead.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e)
+		menuItemOpenRead.addActionListener((e) -> {
+			Object source = e.getSource();
+			if (source == menuItemOpenRead)
 			{
-				int i;
-				Object source = e.getSource();
-				if (source == menuItemOpenRead)
-				{
-					FileInputStream fileInputStream = getFileInputStream();
-					try
-					{
-						do
-						{
-							i = fileInputStream.read();
-							if (i != -1)
-								System.out.print((char) i);
-						} while (i != -1);
-					} catch (IOException e1)
-					{
-						System.out.print("Blad odczytu pliku");
-					}
-				}
+				LottoHelper.saveIntoCollection();
 			}
 		});
 
-		this.frame.setVisible(true);
-	}
+		menuItemOperationCzyTrafiles.addActionListener((e) -> {
+			new WindowIfYouWon();
+		});
 
-	private FileInputStream getFileInputStream()
-	{
-		FileInputStream inputStream = null;
-		JFileChooser fileChooser = new JFileChooser();
-		if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION)
-		{
-			File file = fileChooser.getSelectedFile();
-			try
-			{
-				inputStream = new FileInputStream(file);
-			} catch (FileNotFoundException e1)
-			{
-				// wyswietla przyczyne bledu w konsoli
-				e1.printStackTrace();
-				JOptionPane.showMessageDialog(null, "Nie mozna odnalezc okreslonego pliku!");
-				this.getFileInputStream(); // dzieki THIS odwolujemy sie do
-				// kazdego elementu obecnej klasy.
-			}
-		}
-		return inputStream;
+		this.frame.setVisible(true);
 	}
 
 }
